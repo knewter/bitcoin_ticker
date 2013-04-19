@@ -13,6 +13,15 @@
     <script src="js/vendor/custom.modernizr.js"></script>
     <script src="https://socketio.mtgox.com/socket.io/socket.io.js"></script>
     <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+
+    <style type='text/css'>
+      .up {
+        color: green;
+      }
+      .down {
+        color: red;
+      }
+    </style>
   </head>
   <body>
     <div class="row">
@@ -100,14 +109,35 @@
       var msg, node;
       var bids = $('#bid');
       var asks = $('#ask');
-      var high = $('#high');
-      var low = $('#low');
-      var volume = $('#volume');
-      var buy = $('#buy');
-      var sell = $('#sell');
-      var last = $('#last');
+
+      var ticker = {
+        high: {
+          node: $('#high'),
+          last: 0
+        },
+        low: {
+          node: $('#low'),
+          last: 0
+        },
+        vol: {
+          node: $('#volume'),
+          last: 0
+        },
+        buy: {
+          node: $('#buy'),
+          last: 0
+        },
+        sell: {
+          node: $('#sell'),
+          last: 0
+        },
+        last: {
+          node: $('#last'),
+          last: 0
+        }
+      };
+
       var handleMessage = function(msg) {
-        console.log(msg);
         switch(msg.op){
           case 'private':
             handlePrivate(msg);
@@ -126,13 +156,25 @@
         }
       };
 
+      var setTrendForNode = function(node, last, newVal){
+        node.removeClass('up');
+        node.removeClass('down');
+        if(newVal < last){
+          node.addClass('down');
+        } else if(newVal > last){
+          node.addClass('up');
+        }
+      }
+
       var handleTicker = function(msg) {
-        high.html(msg.high.display_short);
-        low.html(msg.low.display_short);
-        volume.html(msg.vol.display_short);
-        buy.html(msg.buy.display_short);
-        sell.html(msg.sell.display_short);
-        last.html(msg.last.display_short);
+        var newVal;
+        for(var key in ticker){
+          item = ticker[key];
+          item.node.html(msg[key].display_short);
+          newVal = Number(msg[key].value);
+          setTrendForNode(item.node, item.last, newVal);
+          item.last = newVal;
+        }
       };
 
       var handleDepth = function(msg) {
