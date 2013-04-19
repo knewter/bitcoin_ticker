@@ -3,8 +3,6 @@ define(function(){
     this.body = $('tbody', node);
 
     this.add = function(msg){
-      console.log('add', msg);
-      console.log(this.body);
       var date = new Date(msg.date * 1000);
       var trade = $('<tr>');
       var time = $('<td>').html(date.getHours() + ":" + date.getMinutes() + ":" + date.getSeconds());

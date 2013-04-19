@@ -23,7 +23,6 @@ require(['bidlist', 'tradelist', 'ticker', 'jquery'], function(Bidlist, Tradelis
         ticker.handleTicker(msg.ticker);
         break;
       case 'trade':
-        console.log('trade');
         trades.add(msg.trade);
         break;
       default:
