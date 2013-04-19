@@ -1,6 +1,17 @@
+body {
+  font-family: monospace;
+}
 .up {
   color: green;
 }
 .down {
   color: red;
+}
+.ticker-wrapper {
+  background-color: black;
+  color: white;
+  padding: 1em;
+}
+.ticker-wrapper h3{
+  color: white;
 }
