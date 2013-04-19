@@ -5,23 +5,14 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width" />
-    <title>Sample Bitcoin Ticker</title>
+    <title>Isotope11 Bitcoin Ticker</title>
 
     <link rel="stylesheet" href="css/normalize.css" />
     <link rel="stylesheet" href="css/foundation.css" />
+    <link rel="stylesheet" href="css/app.css" />
 
     <script src="js/vendor/custom.modernizr.js"></script>
     <script src="https://socketio.mtgox.com/socket.io/socket.io.js"></script>
-    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
-
-    <style type='text/css'>
-      .up {
-        color: green;
-      }
-      .down {
-        color: red;
-      }
-    </style>
   </head>
   <body>
     <div class="row">
@@ -43,7 +34,7 @@
       </div>
       <div class="large-2 columns">
         <h3>Volume</h3>
-        <div id="volume"></div>
+        <div id="vol"></div>
       </div>
       <div class="large-2 columns">
         <h3>Buy</h3>
@@ -72,123 +63,6 @@
       </div>
     </div>
 
-    <script src="js/foundation/foundation.js"></script>
-
-    <script src="js/foundation/foundation.alerts.js"></script>
-
-    <script src="js/foundation/foundation.clearing.js"></script>
-
-    <script src="js/foundation/foundation.cookie.js"></script>
-
-    <script src="js/foundation/foundation.dropdown.js"></script>
-
-    <script src="js/foundation/foundation.forms.js"></script>
-
-    <script src="js/foundation/foundation.joyride.js"></script>
-
-    <script src="js/foundation/foundation.magellan.js"></script>
-
-    <script src="js/foundation/foundation.orbit.js"></script>
-
-    <script src="js/foundation/foundation.placeholder.js"></script>
-
-    <script src="js/foundation/foundation.reveal.js"></script>
-
-    <script src="js/foundation/foundation.section.js"></script>
-
-    <script src="js/foundation/foundation.tooltips.js"></script>
-
-    <script src="js/foundation/foundation.topbar.js"></script>
-
-    <script>
-      $(document).foundation();
-    </script>
-
-    <script>
-      var conn = io.connect('https://socketio.mtgox.com/mtgox');
-      var msg, node;
-      var bids = $('#bid');
-      var asks = $('#ask');
-
-      var ticker = {
-        high: {
-          node: $('#high'),
-          last: 0
-        },
-        low: {
-          node: $('#low'),
-          last: 0
-        },
-        vol: {
-          node: $('#volume'),
-          last: 0
-        },
-        buy: {
-          node: $('#buy'),
-          last: 0
-        },
-        sell: {
-          node: $('#sell'),
-          last: 0
-        },
-        last: {
-          node: $('#last'),
-          last: 0
-        }
-      };
-
-      var handleMessage = function(msg) {
-        switch(msg.op){
-          case 'private':
-            handlePrivate(msg);
-            break;
-        }
-      };
-
-      var handlePrivate = function(msg) {
-        switch(msg.private){
-          case 'depth':
-            handleDepth(msg.depth);
-            break;
-          case 'ticker':
-            handleTicker(msg.ticker);
-            break;
-        }
-      };
-
-      var setTrendForNode = function(node, last, newVal){
-        node.removeClass('up');
-        node.removeClass('down');
-        if(newVal < last){
-          node.addClass('down');
-        } else if(newVal > last){
-          node.addClass('up');
-        }
-      }
-
-      var handleTicker = function(msg) {
-        var newVal;
-        for(var key in ticker){
-          item = ticker[key];
-          item.node.html(msg[key].display_short);
-          newVal = Number(msg[key].value);
-          setTrendForNode(item.node, item.last, newVal);
-          item.last = newVal;
-        }
-      };
-
-      var handleDepth = function(msg) {
-        node = $('<div>').text(msg.price);
-        switch(msg.type_str){
-        case 'bid':
-          node.prependTo(bids);
-          break;
-        case 'ask':
-          node.prependTo(asks);
-          break;
-        }
-      }
-      conn.on('message', handleMessage);
-    </script>
+    <script data-main="js/app" src="js/vendor/require-jquery.js"></script>
   </body>
 </html>
