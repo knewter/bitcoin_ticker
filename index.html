@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<!--[if IE 8]> 				 <html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width" />
+    <title>Sample Bitcoin Ticker</title>
+
+    <link rel="stylesheet" href="css/normalize.css" />
+    <link rel="stylesheet" href="css/foundation.css" />
+
+    <script src="js/vendor/custom.modernizr.js"></script>
+    <script src="https://socketio.mtgox.com/socket.io/socket.io.js"></script>
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  </head>
+  <body>
+    <div class="row">
+      <div class="large-12 columns">
+        <h2>Bitcoin Ticker</h2>
+        <p>Using Mt. Gox data</p>
+        <hr />
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="large-2 columns">
+        <h3>High</h3>
+        <div id="high"></div>
+      </div>
+      <div class="large-2 columns">
+        <h3>Low</h3>
+        <div id="low"></div>
+      </div>
+      <div class="large-2 columns">
+        <h3>Volume</h3>
+        <div id="volume"></div>
+      </div>
+      <div class="large-2 columns">
+        <h3>Buy</h3>
+        <div id="buy"></div>
+      </div>
+      <div class="large-2 columns">
+        <h3>Sell</h3>
+        <div id="sell"></div>
+      </div>
+      <div class="large-2 columns">
+        <h3>Last</h3>
+        <div id="last"></div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="large-6 columns">
+        <h2>Ask</h2>
+        <div id='ask'>
+        </div>
+      </div>
+      <div class="large-6 columns">
+        <h2>Bid</h2>
+        <div id='bid'>
+        </div>
+      </div>
+    </div>
+
+    <script src="js/foundation/foundation.js"></script>
+
+    <script src="js/foundation/foundation.alerts.js"></script>
+
+    <script src="js/foundation/foundation.clearing.js"></script>
+
+    <script src="js/foundation/foundation.cookie.js"></script>
+
+    <script src="js/foundation/foundation.dropdown.js"></script>
+
+    <script src="js/foundation/foundation.forms.js"></script>
+
+    <script src="js/foundation/foundation.joyride.js"></script>
+
+    <script src="js/foundation/foundation.magellan.js"></script>
+
+    <script src="js/foundation/foundation.orbit.js"></script>
+
+    <script src="js/foundation/foundation.placeholder.js"></script>
+
+    <script src="js/foundation/foundation.reveal.js"></script>
+
+    <script src="js/foundation/foundation.section.js"></script>
+
+    <script src="js/foundation/foundation.tooltips.js"></script>
+
+    <script src="js/foundation/foundation.topbar.js"></script>
+
+    <script>
+      $(document).foundation();
+    </script>
+
+    <script>
+      var conn = io.connect('https://socketio.mtgox.com/mtgox');
+      var msg, node;
+      var bids = $('#bid');
+      var asks = $('#ask');
+      var high = $('#high');
+      var low = $('#low');
+      var volume = $('#volume');
+      var buy = $('#buy');
+      var sell = $('#sell');
+      var last = $('#last');
+      var handleMessage = function(msg) {
+        console.log(msg);
+        switch(msg.op){
+          case 'private':
+            handlePrivate(msg);
+            break;
+        }
+      };
+
+      var handlePrivate = function(msg) {
+        switch(msg.private){
+          case 'depth':
+            handleDepth(msg.depth);
+            break;
+          case 'ticker':
+            handleTicker(msg.ticker);
+            break;
+        }
+      };
+
+      var handleTicker = function(msg) {
+        high.html(msg.high.display_short);
+        low.html(msg.low.display_short);
+        volume.html(msg.vol.display_short);
+        buy.html(msg.buy.display_short);
+        sell.html(msg.sell.display_short);
+        last.html(msg.last.display_short);
+      };
+
+      var handleDepth = function(msg) {
+        node = $('<div>').text(msg.price);
+        switch(msg.type_str){
+        case 'bid':
+          node.prependTo(bids);
+          break;
+        case 'ask':
+          node.prependTo(asks);
+          break;
+        }
+      }
+      conn.on('message', handleMessage);
+    </script>
+  </body>
+</html>
