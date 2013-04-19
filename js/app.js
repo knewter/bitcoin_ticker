@@ -1,7 +1,8 @@
-require(['bidlist', 'ticker', 'jquery'], function(Bidlist, ticker, $){
+require(['bidlist', 'tradelist', 'ticker', 'jquery'], function(Bidlist, Tradelist, ticker, $){
   var conn = io.connect('https://socketio.mtgox.com/mtgox');
   var bids = new Bidlist($('#bid'));
   var asks = new Bidlist($('#ask'));
+  var trades = new Tradelist($('#trades'));
 
   var handleMessage = function(msg) {
     switch(msg.op){
@@ -20,6 +21,10 @@ require(['bidlist', 'ticker', 'jquery'], function(Bidlist, ticker, $){
         break;
       case 'ticker':
         ticker.handleTicker(msg.ticker);
+        break;
+      case 'trade':
+        console.log('trade');
+        trades.add(msg.trade);
         break;
       default:
         console.log('handlePrivate', msg);
