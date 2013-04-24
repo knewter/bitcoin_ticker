@@ -1,9 +1,4 @@
 require(['bidlist', 'tradelist', 'ticker', 'jquery'], function(Bidlist, Tradelist, ticker, $){
-  var conn = io.connect('https://socketio.mtgox.com/mtgox');
-  var bids = new Bidlist($('#bid'));
-  var asks = new Bidlist($('#ask'));
-  var trades = new Tradelist($('#trades'));
-
   var handleMessage = function(msg) {
     switch(msg.op){
       case 'private':
@@ -40,5 +35,14 @@ require(['bidlist', 'tradelist', 'ticker', 'jquery'], function(Bidlist, Tradelis
       break;
     }
   }
-  conn.on('message', handleMessage);
+  //var conn = io.connect('https://socketio.mtgox.com/mtgox');
+  var conn = new WebSocket('ws://websocket.mtgox.com/mtgox?Currency=USD');
+  var bids = new Bidlist($('#bid'));
+  var asks = new Bidlist($('#ask'));
+  var trades = new Tradelist($('#trades'));
+
+  conn.onopen = function(){};
+  conn.onclose = function(){};
+  conn.onmessage = handleMessage;
+  conn.onerror = function(){};
 });
